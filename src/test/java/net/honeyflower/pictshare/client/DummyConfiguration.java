@@ -9,4 +9,5 @@ import org.springframework.context.annotation.ComponentScan;
 @EnableAutoConfiguration
 public class DummyConfiguration {
 
+
 }

@@ -10,7 +10,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
 import org.springframework.core.io.AbstractResource;
 import org.springframework.core.io.ClassPathResource;
@@ -19,8 +19,16 @@ import org.springframework.test.context.junit4.SpringRunner;
 @RunWith(SpringRunner.class)
 @RestClientTest(PictShareClient.class)
 public class PictShareClientTest {
+	
+	@Value("${pictshare.image.hosting.upload_host}")
+	private String baseUrl;
+	
+	@Value("${pictshare.image.hosting.upload_code:#{null}}")
+	private String uploadCode;
+	
+	@Value("${pictshare.image.hosting.delete_code:#{null}}")
+	private String deleteCode;
 
-	@Autowired
     private PictShareClient client;
  
     /*@Autowired
@@ -31,6 +39,7 @@ public class PictShareClientTest {
 	
 	@Before
 	public void setUp() throws Exception {
+		client = new PictShareClient(baseUrl, uploadCode, deleteCode);
 	}
 
 	@After
@@ -43,6 +52,9 @@ public class PictShareClientTest {
     	String base64Image = imageToBase64Encoder(getClassPathResource("Test.png"));
     	UploadResult result = client.uploadBase64(base64Image);
         System.out.println(result);
+        
+        System.out.println(client.delete(result.getHash()));
+        
         assertTrue(result.isStatusOK());
     }
     
@@ -51,6 +63,7 @@ public class PictShareClientTest {
     public void testUploadPicture() throws Exception {
     	
     	UploadResult result = client.upload(imageToBytes(getClassPathResource("Test.png")));
+    	System.out.println(client.delete(result.getHash()));
     	assertTrue(result.isStatusOK());
     }
     

@@ -6,9 +6,11 @@ import org.hibernate.validator.constraints.URL;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
+@ToString
 public class UploadResult {
 	
 	private static final String okStatus="OK";
