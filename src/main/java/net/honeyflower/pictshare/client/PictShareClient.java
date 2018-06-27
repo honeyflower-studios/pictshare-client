@@ -12,8 +12,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
-import org.springframework.http.converter.FormHttpMessageConverter;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -44,7 +42,7 @@ public class PictShareClient {
     	this(new RestTemplateBuilder());
     }
     
-    public String uploadBase64(String base64Image) {
+    public UploadResult uploadBase64(String base64Image) {
     	HttpHeaders headers = new HttpHeaders();
     	headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
@@ -53,11 +51,11 @@ public class PictShareClient {
 
     	HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(map, headers);
 
-    	ResponseEntity<String> response = restTemplate.postForEntity(baseUrl, request , String.class );
+    	ResponseEntity<UploadResult> response = restTemplate.postForEntity(baseUrl, request , UploadResult.class );
     	return response.getBody();
     }
     
-    public String upload(byte[] image) {
+    public UploadResult upload(byte[] image) {
     	ByteArrayResource fileAsResource = new ByteArrayResource(image) {
             @Override
             public String getFilename() {
@@ -69,7 +67,7 @@ public class PictShareClient {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
         HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(map, headers);
-        ResponseEntity<String> response = restTemplate.exchange(baseUrl, HttpMethod.POST, requestEntity, String.class);
+        ResponseEntity<UploadResult> response = restTemplate.exchange(baseUrl, HttpMethod.POST, requestEntity, UploadResult.class);
         return response.getBody();
     }
 
