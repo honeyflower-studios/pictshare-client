@@ -17,6 +17,9 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class PictShareClient {
 	
 	private final RestTemplate restTemplate;
@@ -82,8 +85,12 @@ public class PictShareClient {
         return response.getBody();
     }
     
-    public String delete(String pictureHash) {
+    public void delete(String pictureHash) {
     	String deleteUrl = UriComponentsBuilder.fromHttpUrl(deleteBaseUrl).pathSegment(pictureHash).toUriString();
-    	return restTemplate.getForEntity(deleteUrl, String.class).getBody();
+    	try {
+    		restTemplate.getForEntity(deleteUrl, Void.class);
+		} catch (Exception e) {
+			log.info("got error message from pictshare : {} , where 404 os probably of for them when deleting." , e.getMessage());
+		}
     }
 }

@@ -53,7 +53,7 @@ public class PictShareClientTest {
     	UploadResult result = client.uploadBase64(base64Image);
         System.out.println(result);
         
-        System.out.println(client.delete(result.getHash()));
+        client.delete(result.getHash());
         
         assertTrue(result.isStatusOK());
     }
@@ -63,7 +63,7 @@ public class PictShareClientTest {
     public void testUploadPicture() throws Exception {
     	
     	UploadResult result = client.upload(imageToBytes(getClassPathResource("Test.png")));
-    	System.out.println(client.delete(result.getHash()));
+    	client.delete(result.getHash());
     	assertTrue(result.isStatusOK());
     }
     
