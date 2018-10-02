@@ -93,4 +93,29 @@ public class PictShareClient {
 			log.info("got error message from pictshare : {} , where 404 os probably of for them when deleting." , e.getMessage());
 		}
     }
+    
+    
+	public String updatePhoto(String base64Image, String origUrl) {
+		if (StringUtils.hasText(base64Image) || base64Image.length()<50) {
+			log.warn("tried to upload very small / invalid image data : {}", base64Image);
+			return origUrl;
+		}
+		if (origUrl!=null && origUrl.equalsIgnoreCase(base64Image)) return origUrl;
+		
+		
+		if (!base64Image.startsWith("data:")) base64Image = "data:base64," + base64Image;
+		
+		UploadResult uploadResult = uploadBase64(base64Image);
+		log.debug("avatar upload result : {}", uploadResult);
+		
+		if (!uploadResult.isStatusOK()) throw new IllegalArgumentException("something bad went during avatar upload");
+		
+		if (origUrl!=null && origUrl.indexOf("rebring.com")>-1) {
+			String imageHash = origUrl.substring(origUrl.lastIndexOf('/'));
+			log.debug("about to delete image : {}", imageHash);
+			if (StringUtils.hasText(imageHash)) delete(imageHash); // 404 is ok here. pictshare on delete responces with 404
+		}
+		
+		return uploadResult.getUrl();
+	}
 }
