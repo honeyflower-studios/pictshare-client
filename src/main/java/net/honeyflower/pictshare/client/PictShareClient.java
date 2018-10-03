@@ -96,7 +96,7 @@ public class PictShareClient {
     
     
 	public String updatePhoto(String base64Image, String origUrl) {
-		if (StringUtils.hasText(base64Image) || base64Image.length()<50) {
+		if (!StringUtils.hasText(base64Image) || base64Image.length()<50) {
 			log.warn("tried to upload very small / invalid image data : {}", base64Image);
 			return origUrl;
 		}
